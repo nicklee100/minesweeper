@@ -1,5 +1,6 @@
 
 //when to use arrow functions
+// prevents implement return, preserves the this context
 
 
  GamePlay = {
@@ -12,14 +13,14 @@
 
 }
 
-// Board class is responsible for drawing a board,
-// planting mines, calculating mine distance, traversing
-// the board and revealing fields.
+// Board class is responsible for:
+// drawing board, planting mines, calculating mine distance
+// traversing the board and revealing fields.
 
-
-//todo: crate board in js files
+//Hal's Tips
+//todo: create board in js files
 // create a wrapper made a div with an id
-  // lets you create more than one
+// lets you create more than one
 // make board as a constructor function
 
 
@@ -28,6 +29,8 @@ var Board = {
   boardData: [],
 
   createAndShowBoard: function () {  //render
+
+    //change eventually to be dynamicly  built
 
     var tablehtml = '';
     for (var h=0; h<9; h++) {
@@ -40,16 +43,18 @@ var Board = {
 
     document.getElementById("board").innerHTML = tablehtml;
 
-    //returns a matrix of field objects
+    //change eventually to be dynamicly  built
     for(var i=0; i<9; i++){
       this.boardData[i] = []
       for(var j=0; j<9; j++){
-        console.log(i,j)
         this.boardData[i][j] = new singleField(i,j)
       }
     }
-    console.log(this.boardData)
+    // console.log(this.boardData)
     this.plantMines(this.boardData);
+    console.log('TESt!')
+    this.traverseBoard(this.boardData,this.logCords)
+    this.traverseBoard(this.boardData,this.addEventListener);
 
   },
 
@@ -67,11 +72,10 @@ var Board = {
     }
   },
 
-
-  traverseBoard: function(board,func){  // traversres the board and lets you run function
+  traverseBoard: function(board,func){
     board.forEach(function(row){
-      row.forEach(function(square){
-        func(square);
+      row.forEach(function(squareObj){
+        func(squareObj);
       })
     })
 
@@ -79,22 +83,35 @@ var Board = {
 
   calculateDistance: function(){
 
+  },
+
+  logCords: function(squareObj){
+      let coordinates = squareObj.x +':'+squareObj.y;
+      console.log("coords:", coordinates)
+  },
+
+  addEventListener: function(squareObj){
+    let x  = squareObj.x;
+    let y = squareObj.y;
+    let feild = document.getElementById(x+'-'+y)
+    feild.addEventListener('click',function(){
+      alert('you clicked:'+x+":"+y)
+    })
+    // if(x%2===0) feild.style.backgroundColor = "red";
+    // else feild.style.backgroundColor = "grey";
+
   }
 
 }
 
 
 
-
-//i will need to make a baor of many many mines
-
-function singleField(x,y) {   //
-    //this.element = element; //what is this?
+function singleField(x,y) {
+    //this.element = element; //what is this for?
     this.x = x;
     this.y = y;
     this.mineCount = 0;
 
-    //what shoudl I set this to be in the beginning?
     this.isFlagged = false;
     this.isRevealed = false;
     this.isMine = false;
@@ -141,6 +158,6 @@ singleField.prototype.setText = function(){
 Board.createAndShowBoard();
 
 
-//TIPS
+//NOTE TIPS
 //this refrences the obejct being called on
 // not the obejct where it is defiend
